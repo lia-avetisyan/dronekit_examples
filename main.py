@@ -11,8 +11,6 @@ class GCSControlPanel:
         self.root.geometry("400x500")
 
         self.vehicle = None
-
-        # --- Connection Section ---
         tk.Label(root, text="Connection String:", font=("Arial", 12, "bold")).pack(pady=5)
         self.conn_entry = tk.Entry(root, width=25, font=("Arial", 11))
         self.conn_entry.insert(0, "127.0.0.1:14550")
@@ -28,7 +26,6 @@ class GCSControlPanel:
 
         tk.Label(root, text="---------------------------------------------").pack(pady=5)
 
-        # --- Arm / Disarm Section ---
         self.btn_arm = tk.Button(root, text="ARM Drone", bg="orange", font=("Arial", 11, "bold"), width=20,
                                  state=tk.DISABLED, command=lambda: self.set_arm(True))
         self.btn_arm.pack(pady=5)
@@ -39,7 +36,6 @@ class GCSControlPanel:
 
         tk.Label(root, text="---------------------------------------------").pack(pady=5)
 
-        # --- Flight Modes Section ---
         tk.Label(root, text="Flight Modes", font=("Arial", 12, "bold")).pack(pady=5)
 
         modes = ["GUIDED", "STABILIZE", "LOITER", "LAND", "RTL"]
@@ -47,14 +43,12 @@ class GCSControlPanel:
             b = tk.Button(root, text=mode, font=("Arial", 10), width=18, state=tk.DISABLED,
                           command=lambda m=mode: self.set_mode(m))
             b.pack(pady=2)
-            # Save references to buttons to enable/disable them easily later
             setattr(self, f"btn_{mode.lower()}", b)
 
     def connect_drone(self):
         conn_str = self.conn_entry.get()
         try:
             messagebox.showinfo("Connecting", f"Connecting to {conn_str}...")
-            # Using threading so the GUI doesn't freeze while connecting
             threading.Thread(target=self._threaded_connect, args=(conn_str,), daemon=True).start()
         except Exception as e:
             messagebox.showerror("Error", str(e))
